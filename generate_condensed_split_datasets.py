@@ -46,7 +46,7 @@ ESTIMATED_NUM_ROWS_TOTAL = {
     "Nemotron CC - 9 splits": "8983613946",
     "Nemotron CC v2.1 - feedback splits": "3800016491",
     "Nemotron Competitive Programming v1 - 6 splits": "3927984",
-    "Nemotron Pretrain - 7 splits": "1771380197",
+    "Nemotron Pretrain Code - 7 splits": "1771380197",
     "Nemotron OpenCode SFT - 6 splits": "460254",
     # These rows split a parent dataset total; estimates are weighted by the
     # repository file sizes for the covered split files/directories.
