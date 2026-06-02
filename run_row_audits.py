@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-CSV_PATH = ROOT / "current_datasets.csv"
+CSV_PATH = ROOT / "datasets.csv"
 SCHEMA_DOC = ROOT / "current_datasets_schema.md"
 OUTPUT_SCHEMA = ROOT / "audit_row_schema.json"
 OUT_DIR = ROOT / "audit_results"
@@ -25,7 +25,7 @@ def build_prompt(row, row_index):
     schema = SCHEMA_DOC.read_text()
     return f"""You are one worker in a row-by-row audit pipeline.
 
-Audit exactly one row from current_datasets.csv. Do not edit files.
+Audit exactly one row from datasets.csv. Do not edit files.
 
 Your task:
 1. Verify every cell in the row against primary sources where possible:
@@ -47,7 +47,7 @@ Row JSON:
 Be strict:
 - Do not treat a data-generation framework as `agent_harness`.
 - Do not treat underlying task tests/verifiers as `includes_verification=true` unless the released dataset rows include trajectory-level correctness/pass-fail/reward/target/verifier output.
-- `filtered_for_correctness=true` only if released trajectories are all verified successful/reward=1.
+- `filtered_for_correctness=true` only if released trajectories or RL/task records are all verified successful/reward=1.
 - For `reasoning`, inspect samples where possible and align list values with `teacher_model` when teacher_model is a JSON list.
 """
 

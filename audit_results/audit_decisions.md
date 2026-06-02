@@ -8,7 +8,7 @@ This audit was run with `run_row_audits.py`, which launched one headless Codex C
 |---:|---|---|
 | 1 | `nvidia/Nemotron-SFT-Math-v3` | `teacher_model` now includes both `DeepSeek-V3.2-Speciale` and `DeepSeek-V3.2`; `reasoning` is aligned as `[true,true]`; `DeepSeek-V3.2` was removed from `aux_models` because it is a teacher for TIR solution generation. |
 | 2 | `nvidia/Nemotron-SFT-Multilingual-v1` | `is_code_swe_terminal=false`; code is present but not the primary dataset scope under the schema. |
-| 4 | `nvidia/Nemotron-Math-Proofs-v1` | `is_code_swe_terminal=true` because the dataset is Lean/formal-proof code. Agent-only fields were left unchanged because this is not an agent-rollout dataset. |
+| 4 | `nvidia/Nemotron-Math-Proofs-v1` | `is_code_swe_terminal=false`; Lean/formal-proof data is not treated as code/SWE/terminal for this table unless the dataset is actually coding, SWE, shell, terminal, or agentic coding oriented. Agent/RL-only fields were left unchanged because this is neither an agent-rollout nor RL dataset. |
 | 6 | `nvidia/Nemotron-SFT-OpenCode-v1` | `num_rows=460254` from the exact manifest total. |
 | 9 | `nvidia/Nemotron-SFT-Agentic-v2` | `includes_verification=true` because released rows expose target/correct-answer fields; `aux_models` now records the named LLM judges `DeepSeek-V3.2` and `GLM-4.6`. |
 | 10 | `nvidia/Nemotron-Science-v1` | `teacher_model` now captures MCQ and RQA sources as `["GPT-OSS-120B","not_specified"]`; `reasoning` is aligned as `[true,true]`; `aux_models=[]`. |
@@ -19,7 +19,7 @@ This audit was run with `run_row_audits.py`, which launched one headless Codex C
 
 | Row | Dataset | Row-agent suggestion not applied | Reason |
 |---:|---|---|---|
-| 4 | `nvidia/Nemotron-Math-Proofs-v1` | Mark `is_agent_sft=true`, `filtered_for_correctness=true`, and `includes_verification=false`. | The schema defines `is_agent_sft` as supervised agent rollouts or trajectories. Lean proof-generation/proof-code data is verified SFT data, but not an agent rollout dataset. Agent-only verification columns stay blank for non-agent datasets. |
+| 4 | `nvidia/Nemotron-Math-Proofs-v1` | Mark `is_agent=true`, `filtered_for_correctness=true`, and `includes_verification=false`. | The schema defines `is_agent` as agent rollouts or trajectories. Lean proof-generation/proof-code data is verified SFT data, but not an agent rollout dataset. Agent/RL-only verification columns stay blank for datasets that are neither agent nor RL. |
 
 ## Remaining Uncertainties
 
