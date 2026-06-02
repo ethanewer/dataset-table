@@ -286,6 +286,11 @@ def audit_split_classification(rows, errors):
 
     for row in rows:
         label = gen.split_label(row["dataset_name"], row["dataset_config"], row["hf_split"])
+        actual_hf_split = url_hf_split(row, errors)
+        if actual_hf_split == "think" and row["reasoning"] != "true":
+            errors.append(f"{row_key(row)}: think split should be reasoning=true")
+        if actual_hf_split == "no_think" and row["reasoning"] != "false":
+            errors.append(f"{row_key(row)}: no_think split should be reasoning=false")
         if any(token in label for token in ["code", "swe", "terminal", "competitive", "python", "cpp", "sql", "exercism", "bash"]):
             if not any(token in label for token in ["cc_math", "math_code"]):
                 if row["is_code_swe_terminal"] != "true":

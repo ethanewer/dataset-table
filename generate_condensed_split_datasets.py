@@ -79,6 +79,7 @@ DATASET_LABELS = {
     "lambda/hermes-agent-reasoning-traces": "Hermes Agent Traces",
     "nebius/SWE-agent-trajectories": "SWE Agent Trajectories",
     "open-thoughts/AgentTrove": "AgentTrove",
+    "openbmb/UltraData-SFT-2605": "UltraData SFT 2605",
     "nvidia/AceReason-1.1-SFT": "AceReason SFT",
     "nvidia/HelpSteer3": "HelpSteer3",
     "nvidia/Llama-Nemotron-VLM-Dataset-v1": "Llama Nemotron VLM v1",
@@ -150,6 +151,7 @@ SPLIT_LABELS = {
     "MCQ": "MCQ",
     "Nemotron-SFT-General": "SFT General",
     "Nemotron-SFT-MATH": "SFT Math",
+    "no_think": "non-thinking",
     "openhands_swe": "OpenHands SWE",
     "reasoning_off": "no reasoning",
     "reasoning_on": "reasoning",
@@ -162,6 +164,7 @@ SPLIT_LABELS = {
     "swe1": "SWE 1",
     "swe2": "SWE 2",
     "terminal_agent": "terminal agent",
+    "think": "thinking",
     "tool_calling": "tool calling",
     "train_math": "math train",
     "train_qa": "QA train",
@@ -318,7 +321,15 @@ def split_category(split_names):
     if split_names == ["interactive_agent", "search", "tool_calling"]:
         return "agent/search/tool"
     if len(split_names) == 1:
-        return clean_token(split_names[0])
+        split = split_names[0]
+        if "/" in split:
+            config, mode = split.rsplit("/", 1)
+            return f"{clean_token(config)} {clean_token(mode)}"
+        return clean_token(split)
+    if all(split.endswith("/think") for split in split_names):
+        return "thinking domains"
+    if all(split.endswith("/no_think") for split in split_names):
+        return "non-thinking domains"
     lower_names = [split.lower() for split in split_names]
     if all(any(token in split for token in CODE_SPLIT_TOKENS) for split in lower_names):
         return "code splits"

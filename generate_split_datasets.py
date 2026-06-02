@@ -50,6 +50,18 @@ def public_split_id(config, hf_split):
 # Exact split counts from dataset cards when dataset-server exposes split names
 # but not per-split sizes.
 KNOWN_SPLIT_COUNTS = {
+    k("openbmb/UltraData-SFT-2605", "Chinese-general", "think"): 499954,
+    k("openbmb/UltraData-SFT-2605", "Chinese-general", "no_think"): 500000,
+    k("openbmb/UltraData-SFT-2605", "IF", "think"): 199883,
+    k("openbmb/UltraData-SFT-2605", "IF", "no_think"): 199991,
+    k("openbmb/UltraData-SFT-2605", "Knowledge", "think"): 499667,
+    k("openbmb/UltraData-SFT-2605", "Knowledge", "no_think"): 800000,
+    k("openbmb/UltraData-SFT-2605", "Code", "think"): 2788465,
+    k("openbmb/UltraData-SFT-2605", "Code", "no_think"): 3000000,
+    k("openbmb/UltraData-SFT-2605", "Math", "think"): 2499830,
+    k("openbmb/UltraData-SFT-2605", "Math", "no_think"): 2999644,
+    k("openbmb/UltraData-SFT-2605", "Multi-lang-Knowledge", "no_think"): 499514,
+    k("openbmb/UltraData-SFT-2605", "Multi-lang-Math", "no_think"): 549230,
     k("nvidia/Nemotron-SFT-Multilingual-v1", "default", "code_de"): 133322,
     k("nvidia/Nemotron-SFT-Multilingual-v1", "default", "code_es"): 131578,
     k("nvidia/Nemotron-SFT-Multilingual-v1", "default", "code_fr"): 136045,
@@ -298,6 +310,10 @@ def override_harness(parent, is_agent, name, config, split):
 
 def override_reasoning(parent, name, config, split):
     label = split_label(name, config, split)
+    if split == "think":
+        return "true"
+    if split == "no_think":
+        return "false"
     if "reasoning_off" in label:
         return "false"
     if "reasoning_on" in label:
