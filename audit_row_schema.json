@@ -1,0 +1,65 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["dataset_name", "overall_verdict", "cell_audits", "row_corrections", "summary"],
+  "properties": {
+    "dataset_name": {
+      "type": "string"
+    },
+    "overall_verdict": {
+      "type": "string",
+      "enum": ["ok", "needs_correction", "uncertain"]
+    },
+    "cell_audits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["column", "current_value", "verdict", "suggested_value", "evidence", "notes"],
+        "properties": {
+          "column": {
+            "type": "string"
+          },
+          "current_value": {
+            "type": "string"
+          },
+          "verdict": {
+            "type": "string",
+            "enum": ["correct", "incorrect", "uncertain"]
+          },
+          "suggested_value": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "row_corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["column", "suggested_value"],
+        "properties": {
+          "column": {
+            "type": "string"
+          },
+          "suggested_value": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "string"
+    }
+  }
+}
