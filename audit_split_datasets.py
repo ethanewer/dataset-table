@@ -23,6 +23,14 @@ BOOL_COLUMNS = [
 
 JSON_OR_BOOL_COLUMNS = ["reasoning"]
 JSON_COLUMNS = ["aux_models"]
+ALLOWED_NUM_ROW_SOURCES = {
+    "dataset_server_exact",
+    "dataset_server_partial",
+    "dataset_server_estimated",
+    "dataset_card_exact",
+    "parent_single_split",
+    "not_public_per_split",
+}
 
 
 def read_csv(path):
@@ -68,6 +76,21 @@ def fetch_all_metadata(parent_rows, max_workers):
     return metas
 
 
+def infer_parent_rows(split_rows, errors):
+    parent_by_name = {}
+    for row in split_rows:
+        name = row["dataset_name"]
+        parent_rows = row["parent_num_rows"]
+        if name not in parent_by_name:
+            parent_by_name[name] = {"dataset_name": name, "num_rows": parent_rows}
+        elif parent_by_name[name]["num_rows"] != parent_rows:
+            errors.append(
+                f"{name}: inconsistent parent_num_rows values "
+                f"{parent_by_name[name]['num_rows']} and {parent_rows}"
+            )
+    return list(parent_by_name.values()), parent_by_name
+
+
 def audit_schema(rows, fieldnames, parent_by_name, errors):
     if fieldnames != gen.OUTPUT_COLUMNS:
         errors.append("split_datasets.csv header does not match split schema")
@@ -81,7 +104,7 @@ def audit_schema(rows, fieldnames, parent_by_name, errors):
 
         parent = parent_by_name.get(row["dataset_name"])
         if not parent:
-            errors.append(f"{row_key(row)}: dataset_name is not present in datasets.csv")
+            errors.append(f"{row_key(row)}: dataset_name could not be inferred from split CSV")
             continue
 
         expected_dataset_url = f"https://huggingface.co/datasets/{row['dataset_name']}"
@@ -107,6 +130,8 @@ def audit_schema(rows, fieldnames, parent_by_name, errors):
                 errors.append(f"{row_key(row)}: num_rows must be blank or an integer")
         if not row["num_rows_source"]:
             errors.append(f"{row_key(row)}: num_rows_source is required")
+        elif row["num_rows_source"] not in ALLOWED_NUM_ROW_SOURCES:
+            errors.append(f"{row_key(row)}: unknown num_rows_source {row['num_rows_source']}")
 
         teacher = parse_json_cell(row, "teacher_model", errors)
         reasoning = parse_json_cell(row, "reasoning", errors)
@@ -230,8 +255,7 @@ def main():
     errors = []
     warnings = []
     fieldnames, rows = read_csv(args.csv)
-    parent_rows = gen.read_parent_rows()
-    parent_by_name = {row["dataset_name"]: row for row in parent_rows}
+    parent_rows, parent_by_name = infer_parent_rows(rows, errors)
 
     audit_schema(rows, fieldnames, parent_by_name, errors)
     metas = fetch_all_metadata(parent_rows, args.max_workers)

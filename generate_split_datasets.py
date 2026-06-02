@@ -10,7 +10,6 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-INPUT_CSV = ROOT / "datasets.csv"
 OUTPUT_CSV = ROOT / "split_datasets.csv"
 
 OUTPUT_COLUMNS = [
@@ -127,8 +126,8 @@ def curl_json(url, timeout=25):
         return None, str(exc)
 
 
-def read_parent_rows():
-    with INPUT_CSV.open(newline="") as f:
+def read_parent_rows(input_csv):
+    with input_csv.open(newline="") as f:
         return list(csv.DictReader(f))
 
 
@@ -354,8 +353,8 @@ def build_split_row(meta, config, split):
     }
 
 
-def generate(max_workers):
-    parent_rows = read_parent_rows()
+def generate(input_csv, max_workers):
+    parent_rows = read_parent_rows(input_csv)
     metas = []
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [executor.submit(fetch_metadata, row) for row in parent_rows]
@@ -379,11 +378,17 @@ def write_csv(rows, output_path):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--input-parent-csv",
+        type=Path,
+        required=True,
+        help="Dataset-level parent CSV used to regenerate the split table.",
+    )
     parser.add_argument("--max-workers", type=int, default=8)
     parser.add_argument("--output", type=Path, default=OUTPUT_CSV)
     args = parser.parse_args()
 
-    rows = generate(args.max_workers)
+    rows = generate(args.input_parent_csv, args.max_workers)
     write_csv(rows, args.output)
     unknown_counts = sum(1 for row in rows if row["num_rows"] == "")
     print(f"wrote {len(rows)} split rows to {args.output}")

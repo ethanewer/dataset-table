@@ -1,6 +1,6 @@
 # Split Datasets CSV Schema
 
-This document defines `split_datasets.csv`, the split-level expansion of `datasets.csv`.
+This document defines `split_datasets.csv`, the split-level source of truth for dataset metadata.
 
 Each row is keyed by:
 
@@ -29,7 +29,7 @@ The config is required because many Hugging Face datasets reuse split names such
 | `agent_harness` | string or JSON list string | Split-level agent harness. Blank for non-agent splits. |
 | `num_rows` | integer/null | Split row count when Hugging Face dataset-server or the dataset card exposes a count. Blank when split-level counts are not public without counting dataset files. |
 | `num_rows_source` | string | Source/precision for `num_rows`: `dataset_server_exact`, `dataset_server_partial`, `dataset_server_estimated`, `dataset_card_exact`, `parent_single_split`, or `not_public_per_split`. |
-| `parent_num_rows` | integer | The dataset-level row count from `datasets.csv`. |
+| `parent_num_rows` | integer | The dataset-level row count carried forward for comparison with split-level counts. |
 | `already_included` | boolean | Inherited from the parent dataset row. |
 
 ## Validation
@@ -37,8 +37,13 @@ The config is required because many Hugging Face datasets reuse split names such
 Run:
 
 ```bash
-python3 generate_split_datasets.py
 python3 audit_split_datasets.py
 ```
 
 The audit verifies schema shape, unique split keys, Hugging Face split coverage, count sources, JSON cells, boolean cells, and split-specific classification rules such as `agentless` versus `openhands_swe`.
+
+`generate_split_datasets.py` is a reproducibility helper for rebuilding this file from an explicit parent CSV:
+
+```bash
+python3 generate_split_datasets.py --input-parent-csv /path/to/parent.csv
+```
