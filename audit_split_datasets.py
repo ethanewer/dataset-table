@@ -51,19 +51,29 @@ def parse_json_cell(row, column, errors):
 
 
 def row_key(row):
-    return f"{row['dataset_name']}::{row['dataset_config']}::{row['split']}"
+    return f"{row['dataset_name']}::{row['hf_split']}"
 
 
 def truth(value):
     return str(value).lower() == "true"
 
 
-def expected_split_url(name, config, split):
+def expected_split_url(name, config, hf_split):
     return (
         f"https://huggingface.co/datasets/{name}"
         f"?config={urllib.parse.quote(config, safe='')}"
-        f"&split={urllib.parse.quote(split, safe='')}"
+        f"&split={urllib.parse.quote(hf_split, safe='')}"
     )
+
+
+def url_hf_split(row, errors):
+    parsed = urllib.parse.urlparse(row["split_url"])
+    params = urllib.parse.parse_qs(parsed.query)
+    values = params.get("split")
+    if not values:
+        errors.append(f"{row_key(row)}: split_url is missing split query parameter")
+        return ""
+    return values[0]
 
 
 def fetch_all_metadata(parent_rows, max_workers):
@@ -97,7 +107,7 @@ def audit_schema(rows, fieldnames, parent_by_name, errors):
 
     seen = set()
     for row in rows:
-        key = (row["dataset_name"], row["dataset_config"], row["split"])
+        key = (row["dataset_name"], row["hf_split"])
         if key in seen:
             errors.append(f"duplicate split row: {row_key(row)}")
         seen.add(key)
@@ -110,7 +120,11 @@ def audit_schema(rows, fieldnames, parent_by_name, errors):
         expected_dataset_url = f"https://huggingface.co/datasets/{row['dataset_name']}"
         if row["dataset_url"] != expected_dataset_url:
             errors.append(f"{row_key(row)}: dataset_url should be {expected_dataset_url}")
-        expected_url = expected_split_url(row["dataset_name"], row["dataset_config"], row["split"])
+        actual_hf_split = url_hf_split(row, errors)
+        expected_hf_split = gen.public_split_id(row["dataset_config"], actual_hf_split)
+        if row["hf_split"] != expected_hf_split:
+            errors.append(f"{row_key(row)}: hf_split should be {expected_hf_split}")
+        expected_url = expected_split_url(row["dataset_name"], row["dataset_config"], actual_hf_split)
         if row["split_url"] != expected_url:
             errors.append(f"{row_key(row)}: split_url should be {expected_url}")
         if row["parent_num_rows"] != parent["num_rows"]:
@@ -141,7 +155,7 @@ def audit_schema(rows, fieldnames, parent_by_name, errors):
         if isinstance(teacher, list):
             if not isinstance(reasoning, list):
                 # Split-level reasoning_on/off intentionally collapses this to a scalar.
-                if row["split"] not in {"reasoning_on", "reasoning_off"}:
+                if actual_hf_split not in {"reasoning_on", "reasoning_off"}:
                     errors.append(f"{row_key(row)}: JSON-list teacher_model requires JSON-list reasoning")
             elif len(teacher) != len(reasoning):
                 errors.append(f"{row_key(row)}: teacher_model and reasoning list lengths differ")
@@ -164,18 +178,36 @@ def audit_schema(rows, fieldnames, parent_by_name, errors):
 
 
 def audit_split_coverage(rows, metas, errors):
-    actual = {(row["dataset_name"], row["dataset_config"], row["split"]) for row in rows}
+    actual = {(row["dataset_name"], row["hf_split"]) for row in rows}
     expected = set()
+    expected_hf = {}
     for name, meta in metas.items():
-        for config, split in gen.discover_splits(meta):
-            expected.add((name, config, split))
+        for config, hf_split in gen.discover_splits(meta):
+            public_split = gen.public_split_id(config, hf_split)
+            key = (name, public_split)
+            if key in expected_hf:
+                errors.append(
+                    f"{name}: generated duplicate hf_split id {public_split} for "
+                    f"{expected_hf[key]} and {(config, hf_split)}"
+                )
+            expected_hf[key] = (config, hf_split)
+            expected.add(key)
 
     missing = sorted(expected - actual)
     extra = sorted(actual - expected)
     if missing:
-        errors.append("missing split rows: " + ", ".join(f"{n}::{c}::{s}" for n, c, s in missing[:50]))
+        errors.append("missing split rows: " + ", ".join(f"{n}::{s}" for n, s in missing[:50]))
     if extra:
-        errors.append("extra split rows: " + ", ".join(f"{n}::{c}::{s}" for n, c, s in extra[:50]))
+        errors.append("extra split rows: " + ", ".join(f"{n}::{s}" for n, s in extra[:50]))
+
+    for row in rows:
+        actual_hf_split = url_hf_split(row, errors)
+        expected_pair = expected_hf.get((row["dataset_name"], row["hf_split"]))
+        if expected_pair and expected_pair != (row["dataset_config"], actual_hf_split):
+            errors.append(
+                f"{row_key(row)}: expected HF config/split {expected_pair}, "
+                f"found {(row['dataset_config'], actual_hf_split)}"
+            )
 
 
 def audit_counts(rows, metas, errors, warnings):
@@ -187,8 +219,8 @@ def audit_counts(rows, metas, errors, warnings):
         meta = metas[name]
         for row in group:
             config = row["dataset_config"]
-            split = row["split"]
-            expected_count, expected_source = gen.row_count(meta, config, split)
+            hf_split = url_hf_split(row, errors)
+            expected_count, expected_source = gen.row_count(meta, config, hf_split)
             if row["num_rows"] != expected_count:
                 errors.append(
                     f"{row_key(row)}: num_rows should be {expected_count!r} from {expected_source}, "
@@ -212,7 +244,10 @@ def audit_counts(rows, metas, errors, warnings):
 
 
 def audit_split_classification(rows, errors):
-    by_key = {(row["dataset_name"], row["dataset_config"], row["split"]): row for row in rows}
+    by_key = {
+        (row["dataset_name"], row["dataset_config"], url_hf_split(row, errors)): row
+        for row in rows
+    }
 
     def require(key, column, expected):
         row = by_key.get(key)
@@ -236,7 +271,7 @@ def audit_split_classification(rows, errors):
         require(key, "is_agent", "true")
 
     for row in rows:
-        label = gen.split_label(row["dataset_name"], row["dataset_config"], row["split"])
+        label = gen.split_label(row["dataset_name"], row["dataset_config"], row["hf_split"])
         if any(token in label for token in ["code", "swe", "terminal", "competitive", "python", "cpp", "sql", "exercism", "bash"]):
             if not any(token in label for token in ["cc_math", "math_code"]):
                 if row["is_code_swe_terminal"] != "true":

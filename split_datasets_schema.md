@@ -5,16 +5,15 @@ This document defines `split_datasets.csv`, the split-level source of truth for 
 Each row is keyed by:
 
 - `dataset_name`
-- `dataset_config`
-- `split`
+- `hf_split`
 
-The config is required because many Hugging Face datasets reuse split names such as `train` across multiple configs.
+The `hf_split` value is a unique row-level split identifier within each dataset. Hugging Face datasets often reuse the literal split name `train` across multiple configs, so for non-default configs with `train` as the underlying split, `hf_split` is usually the config name. The exact Hugging Face split remains encoded in `split_url`.
 
 | Column | Type | Description |
 |---|---:|---|
 | `dataset_name` | string | Hugging Face dataset repo id. |
-| `dataset_config` | string | Hugging Face dataset config name. Use `default` when no named config is exposed. |
-| `split` | string | Hugging Face split name for the config. |
+| `dataset_config` | string | Underlying Hugging Face dataset config name. Use `default` when no named config is exposed. |
+| `hf_split` | string | Unique split identifier within `dataset_name`. For non-default configs with underlying split `train`, this is usually the config name. For non-default configs with non-train splits, this is `config/split`. |
 | `dataset_url` | string | Public Hugging Face dataset URL. |
 | `split_url` | string | Hugging Face dataset URL with `config` and `split` query parameters. |
 | `is_code_swe_terminal` | boolean | Split-level classification for code, SWE, shell, terminal, or agentic coding data. Mixed parent datasets can have both true and false split rows. |
@@ -40,7 +39,7 @@ Run:
 python3 audit_split_datasets.py
 ```
 
-The audit verifies schema shape, unique split keys, Hugging Face split coverage, count sources, JSON cells, boolean cells, and split-specific classification rules such as `agentless` versus `openhands_swe`.
+The audit verifies schema shape, unique `dataset_name + hf_split` keys, Hugging Face split coverage through `dataset_config` plus the `split_url` query parameters, count sources, JSON cells, boolean cells, and split-specific classification rules such as `agentless` versus `openhands_swe`.
 
 `generate_split_datasets.py` is a reproducibility helper for rebuilding this file from an explicit parent CSV:
 

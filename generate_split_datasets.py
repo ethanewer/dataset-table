@@ -15,7 +15,7 @@ OUTPUT_CSV = ROOT / "split_datasets.csv"
 OUTPUT_COLUMNS = [
     "dataset_name",
     "dataset_config",
-    "split",
+    "hf_split",
     "dataset_url",
     "split_url",
     "is_code_swe_terminal",
@@ -37,6 +37,14 @@ OUTPUT_COLUMNS = [
 
 def k(dataset, config, split):
     return (dataset, config, split)
+
+
+def public_split_id(config, hf_split):
+    if config == "default":
+        return hf_split
+    if hf_split == "train":
+        return config
+    return f"{config}/{hf_split}"
 
 
 # Exact split counts from dataset cards when dataset-server exposes split names
@@ -309,13 +317,14 @@ def row_count(meta, config, split):
     return "", "not_public_per_split"
 
 
-def build_split_row(meta, config, split):
+def build_split_row(meta, config, hf_split):
     parent = meta["row"]
     name = parent["dataset_name"]
-    is_agent = override_agent(parent, name, config, split)
+    public_split = public_split_id(config, hf_split)
+    is_agent = override_agent(parent, name, config, hf_split)
     is_rl = truth(parent["is_rl"])
-    is_code = override_code(parent, name, config, split)
-    num_rows, num_rows_source = row_count(meta, config, split)
+    is_code = override_code(parent, name, config, hf_split)
+    num_rows, num_rows_source = row_count(meta, config, hf_split)
 
     filtered = parent["filtered_for_correctness"]
     verification = parent["includes_verification"]
@@ -327,25 +336,25 @@ def build_split_row(meta, config, split):
         verification = verification if verification != "" else "false"
 
     encoded_config = urllib.parse.quote(config, safe="")
-    encoded_split = urllib.parse.quote(split, safe="")
-    split_url = f"https://huggingface.co/datasets/{name}?config={encoded_config}&split={encoded_split}"
+    encoded_hf_split = urllib.parse.quote(hf_split, safe="")
+    split_url = f"https://huggingface.co/datasets/{name}?config={encoded_config}&split={encoded_hf_split}"
 
     return {
         "dataset_name": name,
         "dataset_config": config,
-        "split": split,
+        "hf_split": public_split,
         "dataset_url": parent["dataset_url"],
         "split_url": split_url,
         "is_code_swe_terminal": bool_cell(is_code),
         "is_agent": bool_cell(is_agent),
         "is_rl": bool_cell(is_rl),
         "is_pretraining": bool_cell(truth(parent["is_pretraining"])),
-        "reasoning": override_reasoning(parent, name, config, split),
+        "reasoning": override_reasoning(parent, name, config, hf_split),
         "filtered_for_correctness": filtered,
         "includes_verification": verification,
         "teacher_model": parent["teacher_model"],
         "aux_models": parent["aux_models"],
-        "agent_harness": override_harness(parent, is_agent, name, config, split),
+        "agent_harness": override_harness(parent, is_agent, name, config, hf_split),
         "num_rows": num_rows,
         "num_rows_source": num_rows_source,
         "parent_num_rows": parent["num_rows"],
