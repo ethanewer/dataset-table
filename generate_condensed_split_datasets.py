@@ -16,8 +16,6 @@ METADATA_COLUMNS = [
     "is_rl",
     "is_pretraining",
     "reasoning",
-    "filtered_for_correctness",
-    "includes_verification",
     "teacher_model",
     "aux_models",
     "agent_harness",
@@ -36,6 +34,27 @@ OUTPUT_COLUMNS = [
 ]
 
 MAX_READABLE_NAME_CHARS = 64
+
+ESTIMATED_NUM_ROWS_TOTAL = {
+    # Dolmino split-level counts are not public for most component configs.
+    # These are parent-row-count estimates weighted by repository file sizes.
+    "Dolma3 Dolmino - code splits": "23016206",
+    "Dolma3 Dolmino - 25 splits": "5132007803",
+    # These grouped rows cover all public configs/splits for the dataset(s), so
+    # the parent dataset row count is the best available total.
+    "Nemotron Agentic v1 - agent/tool": "335122",
+    "Nemotron CC - 9 splits": "8983613946",
+    "Nemotron CC v2.1 - feedback splits": "3800016491",
+    "Nemotron Competitive Programming v1 - 6 splits": "3927984",
+    "Nemotron Pretrain - 7 splits": "1771380197",
+    "Nemotron OpenCode SFT - 6 splits": "460254",
+    # These rows split a parent dataset total; estimates are weighted by the
+    # repository file sizes for the covered split files/directories.
+    "Nemotron Pretrain SFT v1 - SFT Code": "56188967",
+    "Nemotron Pretrain SFT v1 - SFT General, SFT Math": "243056050",
+    "Nemotron IF Chat SFT v2 - no reasoning": "743044",
+    "Nemotron IF Chat SFT v2 - reasoning": "1255524",
+}
 
 
 FAMILY_LABELS = {
@@ -76,8 +95,8 @@ DATASET_LABELS = {
     "nvidia/Nemotron-Math-v2": "Nemotron Math v2",
     "nvidia/Nemotron-Pretraining-Dataset-sample": "Nemotron Pretrain Sample",
     "nvidia/Nemotron-Pretraining-SFT-v1": "Nemotron Pretrain SFT v1",
-    "nvidia/Nemotron-Pretraining-Specialized-v1": "Nemotron Pretrain Specialized v1",
-    "nvidia/Nemotron-Pretraining-Specialized-v1.1": "Nemotron Pretrain Specialized v1.1",
+    "nvidia/Nemotron-Pretraining-Specialized-v1": "Nemotron Spec v1",
+    "nvidia/Nemotron-Pretraining-Specialized-v1.1": "Nemotron Spec v1.1",
     "nvidia/Nemotron-PrismMath": "Nemotron PrismMath",
     "nvidia/Nemotron-RL-Agentic-Conversational-Tool-Use-Pivot-v1": "Nemotron RL Tool Use Pivot",
     "nvidia/Nemotron-RL-Agentic-Function-Calling-Pivot-v1": "Nemotron RL Function Pivot",
@@ -97,7 +116,7 @@ DATASET_LABELS = {
     "nvidia/Nemotron-RLHF-GenRM-v1": "Nemotron RLHF GenRM",
     "nvidia/Nemotron-Research-GooseReason-0.7M": "GooseReason",
     "nvidia/Nemotron-SFT-Agentic-v2": "Nemotron Agentic SFT v2",
-    "nvidia/Nemotron-SFT-Competitive-Programming-v2": "Nemotron Competitive Programming SFT v2",
+    "nvidia/Nemotron-SFT-Competitive-Programming-v2": "Nemotron CP SFT v2",
     "nvidia/Nemotron-SFT-Instruction-Following-Chat-v2": "Nemotron IF Chat SFT v2",
     "nvidia/Nemotron-SFT-Math-v3": "Nemotron Math SFT v3",
     "nvidia/Nemotron-SFT-Multilingual-v1": "Nemotron Multilingual SFT v1",
@@ -249,12 +268,12 @@ def dataset_label(name):
 
 def sera_group_label(dataset_names):
     if all("4.6-Lite" in name for name in dataset_names):
-        if any("Best-Subset" in name for name in dataset_names):
-            return "Sera 4.6 Lite T2/Best"
         if all(name.endswith("-T1") for name in dataset_names):
             return "Sera 4.6 Lite T1"
         if all(name.endswith("-T2") for name in dataset_names):
             return "Sera 4.6 Lite T2"
+        if any("Best-Subset" in name for name in dataset_names) and len(dataset_names) == 1:
+            return "Sera 4.6 Lite Best"
         return "Sera 4.6 Lite"
     if all("4.5A" in name for name in dataset_names):
         tier = ""
@@ -263,10 +282,15 @@ def sera_group_label(dataset_names):
         elif all(name.endswith("-T2") for name in dataset_names):
             tier = " T2"
         lower_names = [name.lower() for name in dataset_names]
+        domains = []
+        for domain in ("django", "full", "lite", "sphinx", "sympy"):
+            if any(domain in name for name in lower_names):
+                domains.append(domain)
+        domain_label = "all domains" if len(domains) == 5 else "/".join(domains)
         if all(("sphinx" in name or "sympy" in name) for name in lower_names):
             return f"Sera 4.5A{tier} docs/math".strip()
-        if any("django" in name for name in lower_names):
-            return f"Sera 4.5A{tier} web/full/lite".strip()
+        if domains:
+            return f"Sera 4.5A{tier} {domain_label}".strip()
         return f"Sera 4.5A{tier}".strip()
     return "Sera"
 
@@ -348,6 +372,13 @@ def numeric_total(rows, column):
     return str(total)
 
 
+def condensed_num_rows_total(group_rows, name):
+    total = numeric_total(group_rows, "num_rows")
+    if total:
+        return total
+    return ESTIMATED_NUM_ROWS_TOTAL.get(name, "")
+
+
 def readable_name(group_rows):
     dataset_names = sorted({row["dataset_name"] for row in group_rows})
     split_names = sorted({row["hf_split"] for row in group_rows})
@@ -396,12 +427,13 @@ def build_condensed_rows(rows):
             len(item[1]),
         ),
     ):
+        name = readable_name(group_rows)
         row = {
-            "readable_name": readable_name(group_rows),
+            "readable_name": name,
             "dataset_name_regex": regex_alt(row["dataset_name"] for row in group_rows),
             "hf_split_regex": regex_alt(row["hf_split"] for row in group_rows),
             "dataset_config_regex": regex_alt(row["dataset_config"] for row in group_rows),
-            "num_rows_total": numeric_total(group_rows, "num_rows"),
+            "num_rows_total": condensed_num_rows_total(group_rows, name),
             "num_rows_source": num_rows_source,
             "covered_rows": str(len(group_rows)),
         }

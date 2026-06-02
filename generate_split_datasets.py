@@ -118,6 +118,14 @@ AGENT_FALSE_SPLITS = {
     k("nvidia/Nemotron-RL-Super-Training-Blends", "default", "rlhf"),
 }
 
+EXCLUDED_SPLITS = {
+    # These are 1K-row preview slices of the full pretraining code datasets, not
+    # standalone datasets for the table.
+    k("nvidia/Nemotron-Pretraining-Dataset-sample", "Nemotron-Code-Metadata", "train"),
+    k("nvidia/Nemotron-Pretraining-Dataset-sample", "Nemotron-SFT-Code", "train"),
+    k("nvidia/Nemotron-Pretraining-Dataset-sample", "Nemotron-Synthetic-Code", "train"),
+}
+
 
 def curl_json(url, timeout=25):
     proc = subprocess.run(
@@ -212,6 +220,10 @@ def discover_splits(meta):
     if not keys:
         keys.append(("default", "train"))
     return keys
+
+
+def include_split(dataset_name, config, split):
+    return k(dataset_name, config, split) not in EXCLUDED_SPLITS
 
 
 def truth(value):
@@ -374,7 +386,8 @@ def generate(input_csv, max_workers):
     split_rows = []
     for meta in metas:
         for config, split in discover_splits(meta):
-            split_rows.append(build_split_row(meta, config, split))
+            if include_split(meta["row"]["dataset_name"], config, split):
+                split_rows.append(build_split_row(meta, config, split))
     return split_rows
 
 

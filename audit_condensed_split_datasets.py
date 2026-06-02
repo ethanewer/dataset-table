@@ -78,6 +78,7 @@ def audit():
 
     matched_counts = {idx: 0 for idx, *_ in compiled}
     matched_num_rows = {idx: 0 for idx, *_ in compiled}
+    matched_missing_num_rows = {idx: 0 for idx, *_ in compiled}
     source_seen = set()
 
     for source in source_rows:
@@ -106,6 +107,8 @@ def audit():
         matched_counts[idx] += 1
         if source["num_rows"]:
             matched_num_rows[idx] += int(source["num_rows"])
+        else:
+            matched_missing_num_rows[idx] += 1
 
     for idx, condensed, *_ in compiled:
         expected_count = int(condensed["covered_rows"])
@@ -113,7 +116,7 @@ def audit():
             errors.append(
                 f"condensed row {idx}: covered_rows={expected_count}, matched {matched_counts[idx]}"
             )
-        if condensed["num_rows_total"]:
+        if condensed["num_rows_total"] and matched_missing_num_rows[idx] == 0:
             expected_total = int(condensed["num_rows_total"])
             if matched_num_rows[idx] != expected_total:
                 errors.append(

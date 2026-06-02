@@ -7,7 +7,7 @@ Each row represents one or more source rows. A source row is covered when:
 - `dataset_name` fully matches `dataset_name_regex`
 - `hf_split` fully matches `hf_split_regex`
 - `dataset_config` fully matches `dataset_config_regex`
-- all metadata columns match exactly
+- all condensed metadata columns match exactly
 
 | Column | Type | Description |
 |---|---:|---|
@@ -20,14 +20,12 @@ Each row represents one or more source rows. A source row is covered when:
 | `is_rl` | boolean | Shared metadata value for all covered source rows. |
 | `is_pretraining` | boolean | Shared metadata value for all covered source rows. |
 | `reasoning` | boolean or JSON list string | Shared metadata value for all covered source rows. |
-| `filtered_for_correctness` | boolean/null | Shared metadata value for all covered source rows. |
-| `includes_verification` | boolean/null | Shared metadata value for all covered source rows. |
 | `teacher_model` | string or JSON list string | Shared metadata value for all covered source rows. |
 | `aux_models` | JSON array string | Shared metadata value for all covered source rows. |
 | `agent_harness` | string or JSON list string | Shared metadata value for all covered source rows. |
 | `already_included` | boolean | Shared metadata value for all covered source rows. |
-| `num_rows_total` | integer/null | Sum of covered source `num_rows` values when all are public integers; blank when at least one covered source row has no public split-level count. |
-| `num_rows_source` | string | Shared `num_rows_source` value for all covered source rows. |
+| `num_rows_total` | integer/null | Sum of covered source `num_rows` values when all are public integers. For selected `not_public_per_split` rows, this is a best-available estimate from parent row counts, exact dataset-card totals, or parent counts weighted by repository file sizes. Blank only when no usable exact or estimated total is available. |
+| `num_rows_source` | string | Shared source-row `num_rows_source` value for all covered source rows. When this is `not_public_per_split` and `num_rows_total` is populated, the total is estimated or parent-derived rather than a public split-level count. |
 | `covered_rows` | integer | Number of `split_datasets.csv` rows covered by this regex row. |
 
 ## Validation
@@ -39,4 +37,4 @@ python3 generate_condensed_split_datasets.py
 python3 audit_condensed_split_datasets.py
 ```
 
-The audit verifies valid regexes, compact unique readable names, exact source-row coverage, metadata alignment, `covered_rows`, and `num_rows_total`.
+The audit verifies valid regexes, compact unique readable names, exact source-row coverage, condensed metadata alignment, `covered_rows`, exact `num_rows_total` sums when all covered source rows have public counts, and integer estimated totals when covered source rows have non-public split counts.

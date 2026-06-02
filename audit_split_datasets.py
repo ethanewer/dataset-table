@@ -183,6 +183,8 @@ def audit_split_coverage(rows, metas, errors):
     expected_hf = {}
     for name, meta in metas.items():
         for config, hf_split in gen.discover_splits(meta):
+            if not gen.include_split(name, config, hf_split):
+                continue
             public_split = gen.public_split_id(config, hf_split)
             key = (name, public_split)
             if key in expected_hf:
@@ -232,7 +234,19 @@ def audit_counts(rows, metas, errors, warnings):
                     f"found {row['num_rows_source']}"
                 )
 
-        if all(row["num_rows"] and row["num_rows_source"] in {"dataset_server_exact", "dataset_card_exact", "parent_single_split"} for row in group):
+        has_excluded_splits = any(
+            not gen.include_split(name, config, hf_split)
+            for config, hf_split in gen.discover_splits(meta)
+        )
+        if (
+            not has_excluded_splits
+            and all(
+                row["num_rows"]
+                and row["num_rows_source"]
+                in {"dataset_server_exact", "dataset_card_exact", "parent_single_split"}
+                for row in group
+            )
+        ):
             total = sum(int(row["num_rows"]) for row in group)
             parent_total = int(group[0]["parent_num_rows"])
             if total != parent_total:
