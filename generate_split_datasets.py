@@ -138,6 +138,29 @@ EXCLUDED_SPLITS = {
     k("nvidia/Nemotron-Pretraining-Dataset-sample", "Nemotron-Synthetic-Code", "train"),
 }
 
+TEACHER_MODEL_OVERRIDES = {
+    # Dolci RL-Zero Code is collected from the code subset of Dolci Think SFT
+    # 7B, whose source card names this reasoning-trace model mix.
+    k("allenai/Dolci-RL-Zero-Code-7B", "default", "train"): "QwQ-32B + DeepSeek-R1 + DeepSeek-R1-0528",
+    # Golden Goose uses GPT-5 for GooseReason synthesis.
+    k("nvidia/Nemotron-Research-GooseReason-0.7M", "default", "math"): "GPT-5",
+    k("nvidia/Nemotron-Research-GooseReason-0.7M", "default", "code"): "GPT-5",
+    k("nvidia/Nemotron-Research-GooseReason-0.7M", "default", "stem"): "GPT-5",
+    # Terminal-Task-Gen names DeepSeek-V3.2 as the teacher model for
+    # synthetic terminal tasks and trajectories.
+    k("nvidia/Nemotron-Terminal-Synthetic-Tasks", "default", "train"): "DeepSeek-V3.2",
+}
+
+AUX_MODEL_OVERRIDES = {
+    k("allenai/Dolci-RL-Zero-Code-7B", "default", "train"): (
+        '[{"model":"GPT-4.1","use":"synthetic test case generation for Dolci Think Python correctness filtering"}]'
+    ),
+    k("nvidia/Nemotron-Cascade-RL-SWE", "default", "train"): (
+        '[{"model":"Kimi-Dev-72B","use":"execution-free reward model"},'
+        '{"model":"DeepSeek-R1-0528","use":"retrieves noisy files for one prompt variant"}]'
+    ),
+}
+
 
 def curl_json(url, timeout=25):
     proc = subprocess.run(
@@ -321,6 +344,14 @@ def override_reasoning(parent, name, config, split):
     return parent["reasoning"]
 
 
+def override_teacher_model(parent, name, config, split):
+    return TEACHER_MODEL_OVERRIDES.get(k(name, config, split), parent["teacher_model"])
+
+
+def override_aux_models(parent, name, config, split):
+    return AUX_MODEL_OVERRIDES.get(k(name, config, split), parent["aux_models"])
+
+
 def row_count(meta, config, split):
     parent = meta["row"]
     name = parent["dataset_name"]
@@ -380,8 +411,8 @@ def build_split_row(meta, config, hf_split):
         "reasoning": override_reasoning(parent, name, config, hf_split),
         "filtered_for_correctness": filtered,
         "includes_verification": verification,
-        "teacher_model": parent["teacher_model"],
-        "aux_models": parent["aux_models"],
+        "teacher_model": override_teacher_model(parent, name, config, hf_split),
+        "aux_models": override_aux_models(parent, name, config, hf_split),
         "agent_harness": override_harness(parent, is_agent, name, config, hf_split),
         "num_rows": num_rows,
         "num_rows_source": num_rows_source,
