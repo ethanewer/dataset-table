@@ -23,13 +23,13 @@
 
 | readable_name | reasoning | teacher_model | num_rows_total | downloaded | avg_estimated_tokens |
 | --- | --- | --- | --- | --- | --- |
+| Dolma3 Dolmino - code splits | true | not_specified | 23016206 | true |  |
+| Dolma3 Dolmino 10B 1025 - CraneCode | true | not_specified | 636007 | true |  |
+| Nemotron CC Code v1 - data | false | not_specified | 216347017 | true |  |
+| Nemotron Pretrain Code - 7 splits | false | not_specified | 1771380197 | true |  |
+| Nemotron Pretrain SFT v1 - SFT Code | [true,true,false,false] | ["Qwen3","DeepSeek-V3","Qwen2.5-Coder-32B-Instruct","Mixtral-8x22B-v0.1"] | 56188967 | true |  |
 | Nemotron Spec v1 - Scientific Coding | [true,true,true] | ["Qwen2.5-72B","DeepSeek-V3","Phi-4"] | 905966 | true | 1.308B |
 | Nemotron Spec v1.1 - Code Concepts | [false,false,false,true,false] | ["gpt-oss-20b","gpt-oss-120b","Qwen3-235B-A22B","Qwen3-235B-A22B-Thinking-2507","DeepSeek-v3"] | 15225409 | true | 8.055B |
-| Dolma3 Dolmino - code splits | true | not_specified | 23016206 | false |  |
-| Dolma3 Dolmino 10B 1025 - CraneCode | true | not_specified | 636007 | false |  |
-| Nemotron CC Code v1 - data | false | not_specified | 216347017 | false |  |
-| Nemotron Pretrain Code - 7 splits | false | not_specified | 1771380197 | false |  |
-| Nemotron Pretrain SFT v1 - SFT Code | [true,true,false,false] | ["Qwen3","DeepSeek-V3","Qwen2.5-Coder-32B-Instruct","Mixtral-8x22B-v0.1"] | 56188967 | false |  |
 
 ## Code SWE Terminal Non-Pretraining Datasets
 
