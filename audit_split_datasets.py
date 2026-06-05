@@ -108,6 +108,9 @@ def audit_schema(rows, fieldnames, parent_by_name, errors):
 
     seen = set()
     for row in rows:
+        if None in row:
+            errors.append(f"{row_key(row)}: row has extra CSV fields: {row[None]}")
+
         key = (row["dataset_name"], row["hf_split"])
         if key in seen:
             errors.append(f"duplicate split row: {row_key(row)}")
