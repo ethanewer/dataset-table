@@ -32,6 +32,14 @@ OUTPUT_COLUMNS = [
     "num_rows_source",
     "parent_num_rows",
     "already_included",
+    "downloaded",
+    "local_path",
+    "qwen_estimated_tokens",
+    "nemotron_estimated_tokens",
+    "avg_estimated_tokens",
+    "token_estimate_method",
+    "token_estimate_sample_rows",
+    "token_estimate_notes",
 ]
 
 

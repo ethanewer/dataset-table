@@ -35,6 +35,26 @@ def row_key(row):
     return f"{row['dataset_name']}::{row['hf_split']}"
 
 
+def validate_local_path(value, errors, row_index):
+    if not value:
+        return
+    if value.startswith("["):
+        try:
+            paths = json.loads(value)
+        except json.JSONDecodeError as exc:
+            errors.append(f"condensed row {row_index}: local_path invalid JSON list: {exc}")
+            return
+        if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
+            errors.append(f"condensed row {row_index}: local_path JSON value must be a string array")
+            return
+    else:
+        paths = [value]
+
+    for path in paths:
+        if not path.startswith("/wbl-fast/"):
+            errors.append(f"condensed row {row_index}: local_path must be blank or under /wbl-fast")
+
+
 def audit():
     errors = []
     warnings = []
@@ -75,10 +95,33 @@ def audit():
                 int(row["num_rows_total"])
             except ValueError:
                 errors.append(f"condensed row {idx}: num_rows_total must be blank or an integer")
+        if row["downloaded"] not in {"true", "false"}:
+            errors.append(f"condensed row {idx}: downloaded must be true or false")
+        validate_local_path(row["local_path"], errors, idx)
+        for column in [
+            "qwen_estimated_tokens",
+            "nemotron_estimated_tokens",
+            "avg_estimated_tokens",
+            "token_estimate_sample_rows",
+        ]:
+            if row[column]:
+                try:
+                    if int(row[column]) < 0:
+                        errors.append(f"condensed row {idx}: {column} must be non-negative")
+                except ValueError:
+                    errors.append(f"condensed row {idx}: {column} must be blank or an integer")
+
+    unused_estimated_total_names = sorted(set(gen.ESTIMATED_NUM_ROWS_TOTAL) - readable_names)
+    if unused_estimated_total_names:
+        errors.append(
+            "estimated total names do not match condensed rows: "
+            + ", ".join(unused_estimated_total_names)
+        )
 
     matched_counts = {idx: 0 for idx, *_ in compiled}
     matched_num_rows = {idx: 0 for idx, *_ in compiled}
     matched_missing_num_rows = {idx: 0 for idx, *_ in compiled}
+    matched_rows = {idx: [] for idx, *_ in compiled}
     source_seen = set()
 
     for source in source_rows:
@@ -105,6 +148,7 @@ def audit():
 
         idx, _condensed = matches[0]
         matched_counts[idx] += 1
+        matched_rows[idx].append(source)
         if source["num_rows"]:
             matched_num_rows[idx] += int(source["num_rows"])
         else:
@@ -122,6 +166,13 @@ def audit():
                 errors.append(
                     f"condensed row {idx}: num_rows_total={expected_total}, "
                     f"matched total {matched_num_rows[idx]}"
+                )
+        expected_summary = gen.summary_values(matched_rows[idx])
+        for column, expected_value in expected_summary.items():
+            if condensed[column] != expected_value:
+                errors.append(
+                    f"condensed row {idx}: {column}={condensed[column]!r}, "
+                    f"expected {expected_value!r}"
                 )
 
     report = {

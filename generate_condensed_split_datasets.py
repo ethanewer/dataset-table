@@ -22,6 +22,17 @@ METADATA_COLUMNS = [
     "already_included",
 ]
 
+SUMMARY_COLUMNS = [
+    "downloaded",
+    "local_path",
+    "qwen_estimated_tokens",
+    "nemotron_estimated_tokens",
+    "avg_estimated_tokens",
+    "token_estimate_method",
+    "token_estimate_sample_rows",
+    "token_estimate_notes",
+]
+
 OUTPUT_COLUMNS = [
     "readable_name",
     "dataset_name_regex",
@@ -31,6 +42,7 @@ OUTPUT_COLUMNS = [
     "num_rows_total",
     "num_rows_source",
     "covered_rows",
+    *SUMMARY_COLUMNS,
 ]
 
 MAX_READABLE_NAME_CHARS = 64
@@ -73,6 +85,7 @@ DATASET_LABELS = {
     "AlienKevin/SWE-ZERO-12M-trajectories": "SWE-Zero 12M Trajectories",
     "Sellopale/OpenThoughts-Agent-v1-SFT": "OpenThoughts Agent SFT",
     "TeichAI/DeepSeek-v4-Pro-Agent": "DeepSeek Pro Agent",
+    "jedisct1/agent-traces-swival": "Agent Traces Swival",
     "allenai/dolma3_dolmino_mix-100B-1125": "Dolma3 Dolmino 100B 1125",
     "allenai/dolma3_dolmino_mix-10B-1025": "Dolma3 Dolmino 10B 1025",
     "allenai/dolma3_mix-150B-1025": "Dolma3 Mix 150B 1025",
@@ -301,6 +314,8 @@ def sera_group_label(dataset_names):
 def dataset_group_label(dataset_names, families):
     if len(dataset_names) == 1:
         return dataset_label(dataset_names[0])
+    if all(name.startswith("nvidia/Nemotron-Pretraining-Code-") for name in dataset_names):
+        return "Nemotron Pretrain Code"
     if len(families) == 1 and families[0] == "allenai/Sera":
         return sera_group_label(dataset_names)
     if len(families) == 1:
@@ -383,6 +398,52 @@ def numeric_total(rows, column):
     return str(total)
 
 
+def common_or_json_list(rows, column):
+    values = sorted({row[column] for row in rows if row[column]})
+    if not values:
+        return ""
+    if len(values) == 1:
+        return values[0]
+    return json.dumps(values, separators=(",", ":"))
+
+
+def downloaded_summary(rows):
+    return "true" if all(row["downloaded"] == "true" for row in rows) else "false"
+
+
+def token_method_summary(rows):
+    methods = sorted({row["token_estimate_method"] for row in rows if row["token_estimate_method"]})
+    if not methods:
+        return ""
+    if len(rows) == 1 and len(methods) == 1:
+        return methods[0]
+    return "aggregate_from_split_estimates"
+
+
+def token_notes_summary(rows):
+    notes = [row["token_estimate_notes"] for row in rows if row["token_estimate_notes"]]
+    if not notes:
+        return ""
+    if len(rows) == 1:
+        return notes[0]
+    methods = sorted({row["token_estimate_method"] for row in rows if row["token_estimate_method"]})
+    methods_json = json.dumps(methods, separators=(",", ":"))
+    return f"aggregated {len(rows)} split rows; methods={methods_json}"
+
+
+def summary_values(rows):
+    return {
+        "downloaded": downloaded_summary(rows),
+        "local_path": common_or_json_list(rows, "local_path"),
+        "qwen_estimated_tokens": numeric_total(rows, "qwen_estimated_tokens"),
+        "nemotron_estimated_tokens": numeric_total(rows, "nemotron_estimated_tokens"),
+        "avg_estimated_tokens": numeric_total(rows, "avg_estimated_tokens"),
+        "token_estimate_method": token_method_summary(rows),
+        "token_estimate_sample_rows": numeric_total(rows, "token_estimate_sample_rows"),
+        "token_estimate_notes": token_notes_summary(rows),
+    }
+
+
 def condensed_num_rows_total(group_rows, name):
     total = numeric_total(group_rows, "num_rows")
     if total:
@@ -450,6 +511,7 @@ def build_condensed_rows(rows):
         }
         for column, value in zip(METADATA_COLUMNS, metadata_values):
             row[column] = value
+        row.update(summary_values(group_rows))
         condensed.append(row)
 
     with_unique_readable_names(condensed)

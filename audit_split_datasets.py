@@ -19,6 +19,7 @@ BOOL_COLUMNS = [
     "is_rl",
     "is_pretraining",
     "already_included",
+    "downloaded",
 ]
 
 JSON_OR_BOOL_COLUMNS = ["reasoning"]
@@ -142,10 +143,24 @@ def audit_schema(rows, fieldnames, parent_by_name, errors):
                     errors.append(f"{row_key(row)}: num_rows must be non-negative")
             except ValueError:
                 errors.append(f"{row_key(row)}: num_rows must be blank or an integer")
+        for column in [
+            "qwen_estimated_tokens",
+            "nemotron_estimated_tokens",
+            "avg_estimated_tokens",
+            "token_estimate_sample_rows",
+        ]:
+            if row[column]:
+                try:
+                    if int(row[column]) < 0:
+                        errors.append(f"{row_key(row)}: {column} must be non-negative")
+                except ValueError:
+                    errors.append(f"{row_key(row)}: {column} must be blank or an integer")
         if not row["num_rows_source"]:
             errors.append(f"{row_key(row)}: num_rows_source is required")
         elif row["num_rows_source"] not in ALLOWED_NUM_ROW_SOURCES:
             errors.append(f"{row_key(row)}: unknown num_rows_source {row['num_rows_source']}")
+        if row["local_path"] and not row["local_path"].startswith("/wbl-fast/"):
+            errors.append(f"{row_key(row)}: local_path must be blank or under /wbl-fast")
 
         teacher = parse_json_cell(row, "teacher_model", errors)
         reasoning = parse_json_cell(row, "reasoning", errors)

@@ -30,6 +30,14 @@ The `hf_split` value is a unique row-level split identifier within each dataset.
 | `num_rows_source` | string | Source/precision for `num_rows`: `dataset_server_exact`, `dataset_server_partial`, `dataset_server_estimated`, `dataset_card_exact`, `parent_single_split`, or `not_public_per_split`. |
 | `parent_num_rows` | integer | The dataset-level row count carried forward for comparison with split-level counts. |
 | `already_included` | boolean | Inherited from the parent dataset row. |
+| `downloaded` | boolean | Whether the split data is currently considered present in the local dataset store. |
+| `local_path` | string/null | Local dataset path when known. Paths must be blank or resolve under `/wbl-fast`. |
+| `qwen_estimated_tokens` | integer/null | Estimated token count using the Qwen tokenizer, when available. |
+| `nemotron_estimated_tokens` | integer/null | Estimated token count using the Nemotron tokenizer, when available. |
+| `avg_estimated_tokens` | integer/null | Average of available tokenizer-specific token estimates. |
+| `token_estimate_method` | string/null | Method used to estimate token counts, such as sampled row scaling, byte scaling, dataset-card scaling, or an aggregate of split estimates. |
+| `token_estimate_sample_rows` | integer/null | Number of sampled rows used for the estimate when row sampling was used. |
+| `token_estimate_notes` | string/null | Short notes describing token-estimate assumptions, sampling details, or aggregation. |
 
 ## Validation
 
@@ -39,7 +47,7 @@ Run:
 python3 audit_split_datasets.py
 ```
 
-The audit verifies schema shape, unique `dataset_name + hf_split` keys, Hugging Face split coverage through `dataset_config` plus the `split_url` query parameters, count sources, JSON cells, boolean cells, and split-specific classification rules such as `agentless` versus `openhands_swe`.
+The audit verifies schema shape, unique `dataset_name + hf_split` keys, Hugging Face split coverage through `dataset_config` plus the `split_url` query parameters, count sources, JSON cells, boolean cells, local path placement, non-negative token estimates, and split-specific classification rules such as `agentless` versus `openhands_swe`.
 
 `generate_split_datasets.py` is a reproducibility helper for rebuilding this file from an explicit parent CSV:
 
