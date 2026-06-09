@@ -1,0 +1,761 @@
+{
+  "results": [
+    {
+      "avg_estimated_tokens": 1675738666,
+      "dataset_name": "nvidia/Nemotron-SFT-SWE-v2",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 1675738666,
+      "file_selection": "split_specific",
+      "files_sampled": [
+        "data/agentless.jsonl"
+      ],
+      "hf_split": "agentless",
+      "is_agent": "false",
+      "reasoning": "[false, true]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 1 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"Qwen3-Coder-480B-A35B-Instruct\", \"DeepSeek-R1-0528\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 1675738666,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 1097435.5,
+          "teacher": "DeepSeek-R1-0528"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 1531415466,
+      "dataset_name": "nvidia/Nemotron-SFT-SWE-v2",
+      "estimated_nonreasoning_tokens": 1531415466,
+      "estimated_reasoning_tokens": 0,
+      "file_selection": "split_specific",
+      "files_sampled": [
+        "data/swe.jsonl"
+      ],
+      "hf_split": "openhands_swe",
+      "is_agent": "true",
+      "reasoning": "[false, true]",
+      "reasoning_row_pct": 0.0,
+      "reasoning_token_pct": 0.0,
+      "sample_notes": "Sampled 120 rows from 1 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"Qwen3-Coder-480B-A35B-Instruct\", \"DeepSeek-R1-0528\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 1531415466,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 6601068.5,
+          "teacher": "Qwen3-Coder-480B-A35B-Instruct"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 11165727456,
+      "dataset_name": "nvidia/Nemotron-Cascade-2-SFT-Data",
+      "estimated_nonreasoning_tokens": 11165727456,
+      "estimated_reasoning_tokens": 0,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "chat/chat_part_1.jsonl",
+        "chat/chat_part_2.jsonl",
+        "chat/chat_part_3.jsonl",
+        "chat/chat_part_4.jsonl"
+      ],
+      "hf_split": "chat",
+      "is_agent": "false",
+      "reasoning": "[true,true,true,true,true,false]",
+      "reasoning_row_pct": 0.0,
+      "reasoning_token_pct": 0.0,
+      "sample_notes": "Sampled 120 rows from 4 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-V3.2\",\"DeepSeek-V3.2-Speciale\",\"GPT-OSS-120B\",\"Qwen3-235B-A22B-Thinking-2507\",\"Qwen3-32B\",\"Qwen3-235B-A22B-Instruct-2507\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 11165727456,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 413190.5,
+          "teacher": "-"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 7820448950,
+      "dataset_name": "nvidia/Nemotron-Cascade-2-SFT-Data",
+      "estimated_nonreasoning_tokens": 7820448950,
+      "estimated_reasoning_tokens": 0,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "conversational_agent/conversational_agent.jsonl"
+      ],
+      "hf_split": "conversational_agent",
+      "is_agent": "true",
+      "reasoning": "[true,true,true,true,true,false]",
+      "reasoning_row_pct": 0.0,
+      "reasoning_token_pct": 0.0,
+      "sample_notes": "Sampled 120 rows from 1 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-V3.2\",\"DeepSeek-V3.2-Speciale\",\"GPT-OSS-120B\",\"Qwen3-235B-A22B-Thinking-2507\",\"Qwen3-32B\",\"Qwen3-235B-A22B-Instruct-2507\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 7820448950,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 666014.0,
+          "teacher": "-"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 24490998380,
+      "dataset_name": "nvidia/Nemotron-Cascade-2-SFT-Data",
+      "estimated_nonreasoning_tokens": 24490998380,
+      "estimated_reasoning_tokens": 0,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "instruction_following/instruction_following.jsonl"
+      ],
+      "hf_split": "instruction_following",
+      "is_agent": "false",
+      "reasoning": "[true,true,true,true,true,false]",
+      "reasoning_row_pct": 0.0,
+      "reasoning_token_pct": 0.0,
+      "sample_notes": "Sampled 120 rows from 1 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-V3.2\",\"DeepSeek-V3.2-Speciale\",\"GPT-OSS-120B\",\"Qwen3-235B-A22B-Thinking-2507\",\"Qwen3-32B\",\"Qwen3-235B-A22B-Instruct-2507\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 24490998380,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 135597.5,
+          "teacher": "-"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 2894808662,
+      "dataset_name": "nvidia/Nemotron-Cascade-2-SFT-Data",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 2894808662,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "math/math_notool.jsonl",
+        "math/math_proof.jsonl",
+        "math/math_tool.jsonl"
+      ],
+      "hf_split": "math",
+      "is_agent": "false",
+      "reasoning": "[true,true,true,true,true,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 3 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-V3.2\",\"DeepSeek-V3.2-Speciale\",\"GPT-OSS-120B\",\"Qwen3-235B-A22B-Thinking-2507\",\"Qwen3-32B\",\"Qwen3-235B-A22B-Instruct-2507\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 2355023098,
+          "sample_row_pct": 0.6416666666666667,
+          "sample_rows": 77,
+          "sample_token_pct": 0.8135332496011092,
+          "sample_tokens": 1760843.5,
+          "teacher": "DeepSeek-V3.2-Speciale"
+        },
+        {
+          "estimated_row_tokens": 409836519,
+          "sample_row_pct": 0.30833333333333335,
+          "sample_rows": 37,
+          "sample_token_pct": 0.14157637577765514,
+          "sample_tokens": 306433.5,
+          "teacher": "DeepSeek-V3.2"
+        },
+        {
+          "estimated_row_tokens": 129949045,
+          "sample_row_pct": 0.05,
+          "sample_rows": 6,
+          "sample_token_pct": 0.04489037462123566,
+          "sample_tokens": 97162.5,
+          "teacher": "GPT-OSS-120B"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 105715254,
+      "dataset_name": "nvidia/Nemotron-Cascade-2-SFT-Data",
+      "estimated_nonreasoning_tokens": 105715254,
+      "estimated_reasoning_tokens": 0,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "safety/safety.jsonl"
+      ],
+      "hf_split": "safety",
+      "is_agent": "false",
+      "reasoning": "[true,true,true,true,true,false]",
+      "reasoning_row_pct": 0.0,
+      "reasoning_token_pct": 0.0,
+      "sample_notes": "Sampled 120 rows from 1 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-V3.2\",\"DeepSeek-V3.2-Speciale\",\"GPT-OSS-120B\",\"Qwen3-235B-A22B-Thinking-2507\",\"Qwen3-32B\",\"Qwen3-235B-A22B-Instruct-2507\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 105715254,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 116210.5,
+          "teacher": "-"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 9469987634,
+      "dataset_name": "nvidia/Nemotron-Cascade-2-SFT-Data",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 9469987634,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "science/science.jsonl"
+      ],
+      "hf_split": "science",
+      "is_agent": "false",
+      "reasoning": "[true,true,true,true,true,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 1 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-V3.2\",\"DeepSeek-V3.2-Speciale\",\"GPT-OSS-120B\",\"Qwen3-235B-A22B-Thinking-2507\",\"Qwen3-32B\",\"Qwen3-235B-A22B-Instruct-2507\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 9469987634,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 632082.5,
+          "teacher": "GPT-OSS-120B"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 781564244,
+      "dataset_name": "nvidia/Nemotron-Cascade-2-SFT-Data",
+      "estimated_nonreasoning_tokens": 560954436,
+      "estimated_reasoning_tokens": 220609808,
+      "file_selection": "split_specific",
+      "files_sampled": [
+        "swe/swe_agentic.jsonl",
+        "swe/swe_agentless.jsonl"
+      ],
+      "hf_split": "swe",
+      "is_agent": "true",
+      "reasoning": "[true,true,true,true,true,false]",
+      "reasoning_row_pct": 0.5,
+      "reasoning_token_pct": 0.2822670179020673,
+      "sample_notes": "Sampled 120 rows from 2 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-V3.2\",\"DeepSeek-V3.2-Speciale\",\"GPT-OSS-120B\",\"Qwen3-235B-A22B-Thinking-2507\",\"Qwen3-32B\",\"Qwen3-235B-A22B-Instruct-2507\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 560954436,
+          "sample_row_pct": 0.5,
+          "sample_rows": 60,
+          "sample_token_pct": 0.7177329820979327,
+          "sample_tokens": 3149642.0,
+          "teacher": "Qwen3-Coder-480B-A35B-Instruct"
+        },
+        {
+          "estimated_row_tokens": 201686932,
+          "sample_row_pct": 0.35,
+          "sample_rows": 42,
+          "sample_token_pct": 0.2580554745323951,
+          "sample_tokens": 1132430.0,
+          "teacher": "DeepSeek-V3.2"
+        },
+        {
+          "estimated_row_tokens": 18922877,
+          "sample_row_pct": 0.15,
+          "sample_rows": 18,
+          "sample_token_pct": 0.024211543369672222,
+          "sample_tokens": 106248.0,
+          "teacher": "DeepSeek-R1-0528"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 2476252462,
+      "dataset_name": "nvidia/Nemotron-Cascade-2-SFT-Data",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 2476252462,
+      "file_selection": "split_specific",
+      "files_sampled": [
+        "terminal_agent/terminal_agent.jsonl"
+      ],
+      "hf_split": "terminal_agent",
+      "is_agent": "true",
+      "reasoning": "[true,true,true,true,true,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 1 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-V3.2\",\"DeepSeek-V3.2-Speciale\",\"GPT-OSS-120B\",\"Qwen3-235B-A22B-Thinking-2507\",\"Qwen3-32B\",\"Qwen3-235B-A22B-Instruct-2507\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 2476252462,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 2571726.0,
+          "teacher": "DeepSeek-V3.2"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 1383009336,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 1383009336,
+      "file_selection": "split_specific",
+      "files_sampled": [
+        "code/code_1.jsonl",
+        "code/code_10.jsonl",
+        "code/code_11.jsonl",
+        "code/code_12.jsonl",
+        "code/code_13.jsonl",
+        "code/code_14.jsonl",
+        "code/code_2.jsonl",
+        "code/code_3.jsonl",
+        "code/code_4.jsonl",
+        "code/code_5.jsonl",
+        "code/code_6.jsonl",
+        "code/code_7.jsonl",
+        "code/code_8.jsonl",
+        "code/code_9.jsonl"
+      ],
+      "hf_split": "code",
+      "is_agent": "false",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 112 rows from 14 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 112,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 1383009336,
+          "sample_row_pct": 1.0,
+          "sample_rows": 112,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 1481979.0,
+          "teacher": "DeepSeek-R1-0528"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 9943692142,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 2317634186,
+      "estimated_reasoning_tokens": 7626057956,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "general/general_1.jsonl",
+        "general/general_2.jsonl",
+        "general/general_3.jsonl",
+        "general/general_4.jsonl"
+      ],
+      "hf_split": "general",
+      "is_agent": "false",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 0.5666666666666667,
+      "reasoning_token_pct": 0.7669241813996409,
+      "sample_notes": "Sampled 120 rows from 4 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 5872031169,
+          "sample_row_pct": 0.375,
+          "sample_rows": 45,
+          "sample_token_pct": 0.5905282549962189,
+          "sample_tokens": 88631.5,
+          "teacher": "DeepSeek-R1-0528"
+        },
+        {
+          "estimated_row_tokens": 1754026787,
+          "sample_row_pct": 0.19166666666666668,
+          "sample_rows": 23,
+          "sample_token_pct": 0.17639592640342197,
+          "sample_tokens": 26475.0,
+          "teacher": "DeepSeek-R1"
+        },
+        {
+          "estimated_row_tokens": 756103143,
+          "sample_row_pct": 0.11666666666666667,
+          "sample_rows": 14,
+          "sample_token_pct": 0.0760384706356583,
+          "sample_tokens": 11412.5,
+          "teacher": "DeepSeek-V3"
+        },
+        {
+          "estimated_row_tokens": 704393307,
+          "sample_row_pct": 0.175,
+          "sample_rows": 21,
+          "sample_token_pct": 0.07083820545877932,
+          "sample_tokens": 10632.0,
+          "teacher": "DeepSeek-V3-0324"
+        },
+        {
+          "estimated_row_tokens": 681205040,
+          "sample_row_pct": 0.11666666666666667,
+          "sample_rows": 14,
+          "sample_token_pct": 0.06850624798035826,
+          "sample_tokens": 10282.0,
+          "teacher": "N/A"
+        },
+        {
+          "estimated_row_tokens": 175932696,
+          "sample_row_pct": 0.025,
+          "sample_rows": 3,
+          "sample_token_pct": 0.01769289452556325,
+          "sample_tokens": 2655.5,
+          "teacher": "DeepSeek-R1-0324"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 1798996892,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 138636108,
+      "estimated_reasoning_tokens": 1660360784,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "instruction-following.jsonl"
+      ],
+      "hf_split": "instruction-following",
+      "is_agent": "false",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 0.7916666666666666,
+      "reasoning_token_pct": 0.9229369941357796,
+      "sample_notes": "Sampled 120 rows from 1 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 1660360784,
+          "sample_row_pct": 0.7916666666666666,
+          "sample_rows": 95,
+          "sample_token_pct": 0.9229369941357796,
+          "sample_tokens": 130393.0,
+          "teacher": "DeepSeek-R1-0528"
+        },
+        {
+          "estimated_row_tokens": 138636108,
+          "sample_row_pct": 0.20833333333333334,
+          "sample_rows": 25,
+          "sample_token_pct": 0.07706300586422046,
+          "sample_tokens": 10887.5,
+          "teacher": "N/A"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 1619961780,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 1619961780,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "math/math_1.jsonl",
+        "math/math_2.jsonl",
+        "math/math_3.jsonl",
+        "math/math_4.jsonl",
+        "math/math_5.jsonl",
+        "math/math_6.jsonl",
+        "math/math_7.jsonl",
+        "math/math_8.jsonl"
+      ],
+      "hf_split": "math",
+      "is_agent": "false",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 8 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 1619961780,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 1895566.0,
+          "teacher": "DeepSeek-R1-0528"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 2400792488,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 2400792488,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "science.jsonl"
+      ],
+      "hf_split": "science",
+      "is_agent": "false",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 1 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 2400792488,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 1306789.5,
+          "teacher": "DeepSeek-R1-0528"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 517759810,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 517759810,
+      "file_selection": "split_specific",
+      "files_sampled": [
+        "swe_localization.jsonl"
+      ],
+      "hf_split": "swe_localization",
+      "is_agent": "false",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 1 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 517759810,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 648658.5,
+          "teacher": "DeepSeek-R1-0528"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 939886984,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 939886984,
+      "file_selection": "split_specific",
+      "files_sampled": [
+        "swe_repair.jsonl"
+      ],
+      "hf_split": "swe_repair",
+      "is_agent": "false",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 1 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 939886984,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 1246447.5,
+          "teacher": "DeepSeek-R1-0528"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 185989644,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 185989644,
+      "file_selection": "split_specific",
+      "files_sampled": [
+        "swe_testgen.jsonl"
+      ],
+      "hf_split": "swe_testgen",
+      "is_agent": "false",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 1 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 185989644,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 748840.0,
+          "teacher": "DeepSeek-R1-0528"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 3000775666,
+      "dataset_name": "nvidia/Nemotron-Cascade-SFT-Stage-2",
+      "estimated_nonreasoning_tokens": 0,
+      "estimated_reasoning_tokens": 3000775666,
+      "file_selection": "remote_split_specific",
+      "files_sampled": [
+        "tool_calling.jsonl"
+      ],
+      "hf_split": "tool_calling",
+      "is_agent": "true",
+      "reasoning": "[true,false,false]",
+      "reasoning_row_pct": 1.0,
+      "reasoning_token_pct": 1.0,
+      "sample_notes": "Sampled 120 rows from 1 remote split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "[\"DeepSeek-R1-0528\",\"DeepSeek-V3\",\"DeepSeek-V3-0324\"]",
+      "teachers": [
+        {
+          "estimated_row_tokens": 3000775666,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 657058.5,
+          "teacher": "Qwen3-235B-A22B"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 349547152,
+      "dataset_name": "Verdugie/opus-4.6-training-catalog",
+      "estimated_nonreasoning_tokens": 22987169,
+      "estimated_reasoning_tokens": 326559983,
+      "file_selection": "train_files",
+      "files_sampled": [
+        "data/coding.jsonl",
+        "data/conversation.jsonl",
+        "data/reasoning.jsonl"
+      ],
+      "hf_split": "train",
+      "is_agent": "false",
+      "reasoning": "[true,false]",
+      "reasoning_row_pct": 0.6666666666666666,
+      "reasoning_token_pct": 0.9342372881355933,
+      "sample_notes": "Sampled 120 rows from 3 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "Claude Opus 4.6",
+      "teachers": [
+        {
+          "estimated_row_tokens": 349547152,
+          "sample_row_pct": 1.0,
+          "sample_rows": 120,
+          "sample_token_pct": 1.0,
+          "sample_tokens": 238212.5,
+          "teacher": "Claude Opus 4.6"
+        }
+      ]
+    },
+    {
+      "avg_estimated_tokens": 55339586,
+      "dataset_name": "angrygiraffe/claude-opus-4.6-4.7-reasoning-8.7k",
+      "estimated_nonreasoning_tokens": 21040143,
+      "estimated_reasoning_tokens": 34299443,
+      "file_selection": "train_files",
+      "files_sampled": [
+        "code_train.jsonl",
+        "code_train_no_reasoning.jsonl",
+        "full_train.jsonl",
+        "full_train_no_reasoning.jsonl",
+        "instruct_train.jsonl",
+        "instruct_train_no_reasoning.jsonl",
+        "roleplay_train.jsonl",
+        "roleplay_train_no_reasoning.jsonl"
+      ],
+      "hf_split": "train",
+      "is_agent": "false",
+      "reasoning": "[true,false]",
+      "reasoning_row_pct": 0.5,
+      "reasoning_token_pct": 0.6197994148084107,
+      "sample_notes": "Sampled 120 rows from 8 local split-specific JSONL file(s); token shares use mean Qwen/Nemotron token lengths.",
+      "sample_rows": 120,
+      "sample_target_rows": 120,
+      "status": "sampled",
+      "teacher_model": "Claude Opus 4.6/4.7",
+      "teachers": [
+        {
+          "estimated_row_tokens": 39140991,
+          "sample_row_pct": 0.45,
+          "sample_rows": 54,
+          "sample_token_pct": 0.707287374764067,
+          "sample_tokens": 136214.0,
+          "teacher": "claude-opus-4-7"
+        },
+        {
+          "estimated_row_tokens": 16198595,
+          "sample_row_pct": 0.55,
+          "sample_rows": 66,
+          "sample_token_pct": 0.29271262523593294,
+          "sample_tokens": 56372.5,
+          "teacher": "claude-opus-4-6"
+        }
+      ]
+    }
+  ],
+  "sample_rows_per_split": 120
+}
